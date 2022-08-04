@@ -8,17 +8,25 @@ import rule
 import config
 from flask import Flask, render_template, request, jsonify
 
-app = Flask(__name__)
-app.jinja_env.variable_start_string = '{<'
-app.jinja_env.variable_end_string = '>}'
+app = Flask(__name__,
+            template_folder="./templates",
+            static_folder="./templates",
+            static_url_path="")
+app.jinja_env.variable_start_string = '{.<'
+app.jinja_env.variable_end_string = '>.}'
 
 
-@app.route("/")
-# 定义方法 用jinjia2引擎来渲染页面，并返回一个index.html页面
+@app.route('/')
 def root():
     if request.remote_addr not in config.ALLOW_ACCESS_IP:
         return "Access Denied"
     return render_template("index.html")
+
+
+@app.route('/static/<path:path>')
+def on_vue_static(path):
+    print(path)
+    return app.send_static_file("./" + path)
 
 
 @app.route('/api/v1/get/process_chain/delete', methods=['GET'])

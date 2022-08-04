@@ -12,7 +12,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select, update, delete, values
 
-from yaml import dump
 
 g_engine = None
 g_base = declarative_base()

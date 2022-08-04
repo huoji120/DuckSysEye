@@ -11,6 +11,7 @@ SysEye是一个window上的基于att&ck现代EDR设计思想的威胁响应工�
 
 ### 检出截图
 .....todo......
+[![image](xxx.png)](https://github.com/huoji120/DuckSysEye/raw/main/Image/logo.png)
 
 ### 待做列表
 1. 更好的前端(目前是VUE-CDN模式,不太好,想换成VUE-CLI)

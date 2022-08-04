@@ -21,8 +21,14 @@ SysEye是一个window上的基于att&ck现代EDR设计思想的威胁响应工�
 请牢记,SysEye自身定位是轻量级威胁检出工具
 
 ### 检出截图
-.....todo......
-
+威胁列表:
+![image](https://github.com/huoji120/DuckSysEye/raw/main/Image/1.png)
+powershell:
+![image](https://github.com/huoji120/DuckSysEye/raw/main/Image/2.png)
+apt样本:
+![image](https://github.com/huoji120/DuckSysEye/raw/main/Image/3.png)
+勒索软件:
+![image](https://github.com/huoji120/DuckSysEye/raw/main/Image/4.png)
 ### 待做列表
 1. 更好的前端(目前是VUE-CDN模式,不太好,想换成VUE-CLI)
 2. 日志回放

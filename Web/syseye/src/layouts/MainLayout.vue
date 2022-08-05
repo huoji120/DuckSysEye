@@ -37,7 +37,10 @@
             clickable
             v-ripple
             active-class="menu-active"
-            @click="selectLabel = 'non_hanlde_report';routerToThreatList(0)"
+            @click="
+              selectLabel = 'non_hanlde_report';
+              routerToThreatList(0);
+            "
           >
             <q-item-section avatar>
               <q-icon name="report" />
@@ -49,7 +52,10 @@
             clickable
             v-ripple
             active-class="menu-active"
-            @click="selectLabel = 'handle_report';routerToThreatList(1)"
+            @click="
+              selectLabel = 'handle_report';
+              routerToThreatList(1);
+            "
           >
             <q-item-section avatar>
               <q-icon name="done" />
@@ -61,27 +67,56 @@
             clickable
             v-ripple
             active-class="menu-active"
-            @click="selectLabel = 'ingore_report';routerToThreatList(2)"
+            @click="
+              selectLabel = 'ingore_report';
+              routerToThreatList(2);
+            "
           >
             <q-item-section avatar>
               <q-icon name="texture" />
             </q-item-section>
             <q-item-section> 已忽略威胁列表 </q-item-section>
           </q-item>
+          <template v-for="(item, index) in plugin" v-bind:key="index">
+            <q-item
+              :active="selectLabel == item['name']"
+              clickable
+              v-ripple
+              active-class="menu-active"
+              @click="
+                selectLabel = item['name'];
+                routerToPlugin(item['html']);
+              "
+            >
+              <q-item-section avatar>
+                <q-icon :name="item['icon']" />
+              </q-item-section>
+              <q-item-section> {{ item["name"] }} </q-item-section>
+            </q-item>
+          </template>
         </q-list>
       </q-scroll-area>
     </q-drawer>
 
-    <q-page-container>
-      <router-view />
-    </q-page-container>
+    <template v-if="isInPlugin == false">
+      <q-page-container>
+        <router-view />
+      </q-page-container>
+    </template>
+    <template v-if="isInPlugin">
+      <div class="q-gutter-md q-mb-sm q-pa-lg">
+        <HtmlPanel v-model:url="PluginUrl" />
+      </div>
+    </template>
   </q-layout>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-
+import HtmlPanel from '../components/Html.vue' // 根据实际路径导入
+import axios from 'axios'
 export default defineComponent({
+  components: { HtmlPanel },
   name: 'MainLayout',
   setup () {
     return {}
@@ -90,13 +125,34 @@ export default defineComponent({
     return {
       selectLabel: 'non_hanlde_report',
       drawer: false,
-      miniState: true
+      miniState: true,
+      plugin: [],
+      isInPlugin: false,
+      PluginUrl: ''
     }
   },
   methods: {
     routerToThreatList (index) {
+      this.isInPlugin = false
       this.$router.push({ name: 'index', params: { queryIndex: index } })
+    },
+    routerToPlugin (url) {
+      this.isInPlugin = true
+      this.PluginUrl = '/plugin/' + url
+    },
+    getPluginsMenu () {
+      axios
+        .get('/api/v1/get/plugin_menu', {
+          'Content-Type': 'application/json'
+        })
+        .then((response) => {
+          this.plugin = response.data.data.menu
+          console.log(this.plugin)
+        })
     }
+  },
+  mounted () {
+    this.getPluginsMenu()
   }
 })
 </script>

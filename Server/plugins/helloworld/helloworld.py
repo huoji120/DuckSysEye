@@ -4,11 +4,21 @@ import glob
 from pathlib import Path
 
 rm_plugs_config = {
-    "enable": False,
+    "enable": True,
     "author": "huoji",
     "description": "hello world插件示例",
     "version": "0.0.1",
+    "html": "helloworld"
 }
+
+
+def html_menu():
+    # https://fonts.google.com/icons?selected=Material+Icons
+    return {'name': "示例插件", 'icon': 'lightbulb', 'html': rm_plugs_config['html']}
+
+
+def html_draw():
+    return '<div>hello world</div>'
 
 
 def process_terminal(current_process, host, raw_log_data, json_log_data):

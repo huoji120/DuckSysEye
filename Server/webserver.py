@@ -32,6 +32,20 @@ def on_vue_static(path):
     return app.send_static_file("./" + path)
 
 
+@app.route('/plugin/<path:path>')
+def on_plugin_access(path):
+    if request.remote_addr not in config.ALLOW_ACCESS_IP:
+        return "Access Denied"
+    return plugin.dispath_html_draw(path)
+
+
+@app.route('/api/v1/get/plugin_menu')
+def plugin_menu():
+    if request.remote_addr not in config.ALLOW_ACCESS_IP:
+        return "Access Denied"
+    return {'data': {'menu': plugin.dispath_html_menu()}}
+
+
 @app.route('/api/v1/get/threat_statistics', methods=['GET'])
 def threat_statistics():
     if request.remote_addr not in config.ALLOW_ACCESS_IP:

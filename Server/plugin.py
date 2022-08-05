@@ -77,3 +77,23 @@ def dispath_rule_init():
         _, plug_obj = global_vars.g_plugs[index]
         if hasattr(plug_obj, "rule_init"):
             plug_obj.rule_init()
+
+# 有性能问题,以后再说
+
+
+def dispath_html_menu():
+    plugin_menu = []
+    for index in range(len(global_vars.g_plugs)):
+        _, plug_obj = global_vars.g_plugs[index]
+    if hasattr(plug_obj, "html_menu"):
+        plugin_menu.append(plug_obj.html_menu())
+    return plugin_menu
+
+
+def dispath_html_draw(name):
+    for index in range(len(global_vars.g_plugs)):
+        _, plug_obj = global_vars.g_plugs[index]
+    if hasattr(plug_obj, "html_draw"):
+        if plug_obj.rm_plugs_config['html'] == name:
+            return plug_obj.html_draw()
+    return 'Access Denied '

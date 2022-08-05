@@ -1,5 +1,37 @@
 <template>
   <div>
+    <div class="q-gutter-md q-mb-sm q-pa-lg">
+    <q-card class="bg-transparent no-shadow no-border">
+      <q-card-section class="q-pa-none">
+        <div class="row q-col-gutter-sm">
+          <div
+            v-for="(item, index) in Threatitems"
+            :key="index"
+            class="col-md-3 col-sm-12 col-xs-12"
+          >
+            <q-item
+              :style="`background-color: ${item.color1}`"
+              class="q-pa-none"
+            >
+              <q-item-section
+                side
+                :style="`background-color: ${item.color2}`"
+                class="q-pa-lg q-mr-none text-white"
+              >
+                <q-icon :name="item.icon" color="white" size="24px"></q-icon>
+              </q-item-section>
+              <q-item-section class="q-pa-md q-ml-none text-white">
+                <q-item-label class="text-white text-h6 text-weight-bolder">{{
+                  item.value
+                }}</q-item-label>
+                <q-item-label>{{ item.title }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
+    </div>
     <div class="row">
       <div class="col"></div>
       <div class="col">
@@ -8,7 +40,7 @@
             <template
               v-if="!server_threat.data || server_threat.data.length == 0"
             >
-              <h4>暂无可用数据...</h4>
+              <h4>暂无可用数据,下次刷新时间 {{last_refresh}}...</h4>
             </template>
             <template
               v-for="(threat, index) in server_threat.data"
@@ -77,6 +109,22 @@
                             icon="search"
                           >
                             在VT上搜索
+                          </q-btn>
+                          <q-btn
+                            flat
+                            color="accent"
+                            @click="handle_threat(threat.id, 1)"
+                            icon="done"
+                          >
+                            确认威胁
+                          </q-btn>
+                          <q-btn
+                            flat
+                            color="accent"
+                            @click="handle_threat(threat.id, 2)"
+                            icon="texture"
+                          >
+                            忽略威胁
                           </q-btn>
                           <q-btn
                             flat
@@ -172,6 +220,43 @@ export default defineComponent({
         width: '9px',
         opacity: 0.2
       },
+      threatStatistics: {
+        all: 1,
+        confirm: 0,
+        ingore: 1,
+        working: 0
+      },
+      Threatitems:
+       [
+         {
+           title: '发现的威胁',
+           icon: 'remove_red_eye',
+           value: '200',
+           color1: '#5064b5',
+           color2: '#3e51b5'
+         },
+         {
+           title: '确认的威胁',
+           icon: 'flash_on',
+           value: '500',
+           color1: '#f37169',
+           color2: '#f34636'
+         },
+         {
+           title: '忽略的威胁',
+           icon: 'texture',
+           value: '50',
+           color1: '#ea6a7f',
+           color2: '#ea4b64'
+         },
+         {
+           title: '进行中的威胁',
+           icon: 'bar_chart',
+           value: '1020',
+           color1: '#a270b1',
+           color2: '#9f52b1'
+         }
+       ],
       dialog: false,
       maximizedToggle: true,
       server_threat: {},
@@ -273,6 +358,15 @@ export default defineComponent({
           this.get_clientids()
         })
     },
+    handle_threat (threatId, handleType) {
+      axios
+        .get('/api/v1/get/process_chain/handle?id=' + threatId + '&handletype=' + handleType, {
+          'Content-Type': 'application/json'
+        })
+        .then((response) => {
+          this.get_clientids()
+        })
+    },
     show_details (threatId) {
       axios
         .get('/api/v1/get/process_chain/pull?id=' + threatId, {
@@ -290,9 +384,28 @@ export default defineComponent({
           }
         })
     },
-    get_clientids () {
+    get_threatStatistics () {
       axios
-        .get('/api/v1/get/process_chain/all', {
+        .get('/api/v1/get/threat_statistics', {
+          'Content-Type': 'application/json'
+        })
+        .then((response) => {
+          const data = response.data
+          if (data.data) {
+            this.threatStatistics = data.data
+            // Threatitems
+            this.Threatitems[0].value = this.threatStatistics.all
+            this.Threatitems[1].value = this.threatStatistics.confirm
+            this.Threatitems[2].value = this.threatStatistics.ingore
+            this.Threatitems[3].value = this.threatStatistics.working
+          }
+        })
+    },
+    get_clientids () {
+      const queryType = this.$route.params.queryIndex
+      const queryIndex = (queryType === null || queryType === undefined) ? 0 : queryType
+      axios
+        .get('/api/v1/get/process_chain/all?query_type=' + queryIndex, {
           'Content-Type': 'application/json'
         })
         .then((response) => {
@@ -301,10 +414,8 @@ export default defineComponent({
             this.server_threat = {
               data: []
             }
-            console.log(this)
             this.server_threat.data = data.data
-            // this.$set(this.server_threat, 'data', data.data)
-            console.log('duck', this.server_threat, 'data', data.data)
+            this.get_threatStatistics()
           }
         })
     }
@@ -319,28 +430,12 @@ export default defineComponent({
       }
     }, 1000)
     // this.draw_tree();
+  },
+  watch: {
+    '$route' (val, from) { // 监听到路由（参数）改变
+      // 拿到目标参数 val.query.typeCode 去再次请求数据接口
+      this.get_clientids()
+    }
   }
 })
 </script>
-<style type="text/css">
-::-webkit-scrollbar {
-  /*滚动条整体样式*/
-  width: 5px;
-  /*高宽分别对应横竖滚动条的尺寸*/
-  height: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  /*滚动条里面小方块*/
-  border-radius: 15px;
-  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  background: #027be3;
-}
-
-::-webkit-scrollbar-track {
-  /*滚动条里面轨道*/
-  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  border-radius: 15px;
-  background: #ededed;
-}
-</style>

@@ -1,6 +1,7 @@
 import rule_engine
 import rules.py.process as rule_process
 import rules.py.action as rule_action
+import plugin
 g_sample_rule = {}
 g_sample_rule['process'] = rule_process.rule
 g_sample_rule['action'] = rule_action.rule
@@ -77,4 +78,5 @@ def init_rule():
         base_host_rules.append(
             {'name': iter['name'], 'score': iter['score'], 'rules': temp_process_rules})
     '''
+    plugin.dispath_rule_init()
     print('init rule done')

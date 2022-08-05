@@ -2,12 +2,12 @@ import json
 from pickle import TRUE
 import time
 
-from sqlalchemy import false
 import process
 import rule
 import sql
 import global_vars
 import config
+import plugin
 
 
 def process_log(host, json_log, raw_log):
@@ -59,15 +59,18 @@ def process_log(host, json_log, raw_log):
             if score > 0:
                 child.set_score(score, rule_hit_name)
                 had_threat = global_vars.THREAT_TYPE_PROCESS
+        plugin.dispath_rule_new_process_create(
+            host, current_process, raw_log, json_log)
     elif json_log['action'] == 'processterminal':
         pid = log['processid']
         current_process = process.get_process_by_pid(pid)
         if current_process is not None:
+            plugin.dispath_process_terminal(
+                host, current_process, raw_log, json_log)
             current_process.active = False
             current_process.chain.terminate_count += 1
             if current_process.chain.terminate_count >= (current_process.chain.active_count - 1):
                 current_process.chain.active = False
-                print('进程链已经结束')
                 if current_process.chain.risk_score >= config.MAX_THREAT_SCORE:
                     sql.update_threat_log(host, current_process.chain.risk_score,
                                           json.dumps(current_process.chain.operationlist), current_process.chain.hash, current_process.chain.get_json(), global_vars.THREAT_TYPE_PROCESS, True)
@@ -78,10 +81,11 @@ def process_log(host, json_log, raw_log):
         if current_process is not None:
             log['action'] = json_log['action']
             score, rule_hit_name = rule.calc_score_in_action(log)
-            print(log, score, rule_hit_name)
             if score > 0:
                 current_process.set_score(score, rule_hit_name)
                 had_threat = global_vars.THREAT_TYPE_PROCESS
+            plugin.dispath_rule_new_process_action(
+                host, current_process, raw_log, json_log)
 
     if current_process is not None:
         if current_process.chain.risk_score >= config.MAX_THREAT_SCORE:
@@ -107,7 +111,6 @@ def process_log(host, json_log, raw_log):
         chain_hash = current_process.chain.hash
     sql.push_raw(host, json.loads(raw_log), rule_hit_name,
                  score, chain_hash, had_threat)
-
     '''
     for iter in process.g_ProcessChainList:
         item: process.Process = iter

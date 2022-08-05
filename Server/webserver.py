@@ -7,6 +7,8 @@ import log
 import rule
 import config
 from flask import Flask, render_template, request, jsonify
+import plugin
+import logging
 
 app = Flask(__name__,
             template_folder="./templates",
@@ -127,6 +129,10 @@ def process():
 
 
 if __name__ == '__main__':
+    plugin.reload_plugs()
     sql.init()
     rule.init_rule()
+
+    flask_log = logging.getLogger('werkzeug')
+    flask_log.setLevel(logging.ERROR)
     app.run(debug=True, host="0.0.0.0")

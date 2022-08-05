@@ -12,7 +12,7 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: 'dashboard', component: () => import('pages/Dashboard.vue') },
-      { path: 'index', component: () => import('pages/Index.vue') }
+      { path: 'index', name: 'index', component: () => import('pages/Index.vue') }
     ]
   },
   // Always leave this as last one,

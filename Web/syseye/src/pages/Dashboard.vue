@@ -1,9 +1,6 @@
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
-    working.....
-  </div>
+  <h4  class="row q-gutter-md q-mb-sm q-pa-lg">施工中....</h4>
 </template>
-
 <script>
 import { defineComponent } from 'vue'
 

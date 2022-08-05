@@ -172,7 +172,7 @@ def push_threat_log(host, risk_score, hit_rule_json, process_chain_hash, raw_jso
     global g_threat_table
     global g_threat_table_ins
     ins = g_threat_table_ins.values(
-        host=host, risk_score=risk_score, process_chain_hash=process_chain_hash, hit_rule=hit_rule_json, type=type, data=raw_json, timestamp=str(int(round(time.time() * 1000))), is_end=0, start_process_info=start_process_info)
+        host=host, risk_score=risk_score, process_chain_hash=process_chain_hash, hit_rule=hit_rule_json, type=type, data=raw_json, timestamp=str(int(round(time.time() * 1000))), is_end=0, start_process_info=start_process_info, handle_type=0)
     # 连接引擎
     conn = g_engine.connect()
     # 执行语句

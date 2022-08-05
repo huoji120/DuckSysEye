@@ -65,6 +65,8 @@ class threat_log(g_base):
     is_end = Column(Integer)
     # start process
     start_process_info = Column(String)
+    # handle type
+    handle_type = Column(Integer)
 
     def __str__(self):
         return self.id
@@ -124,6 +126,16 @@ def update_threat_log(host, risk_score, hit_rule_json, process_chain_hash, raw_j
     return result
 
 
+def handle_threat_log(threat_id, handle_type):
+    global g_threat_table
+    global g_engine
+    conn = g_engine.connect()
+    update = g_threat_table.update().values(handle_type=handle_type, is_end=1).where(
+        g_threat_table.columns.id == int(threat_id))
+    result = conn.execute(update)
+    return result
+
+
 def delete_threat(threat_id):
     global g_threat_table
     global g_engine
@@ -142,11 +154,15 @@ def query_one_threat(threat_id):
     return threat
 
 
-def query_all_threat_log():
+def query_all_threat_log(query_type):
     global g_threat_table
     sql_session = sessionmaker(bind=g_engine)
-    threat = sql_session().query(g_threat_table).with_entities(threat_log.host, threat_log.process_chain_hash,
-                                                               threat_log.hit_rule, threat_log.timestamp, threat_log.type, threat_log.risk_score, threat_log.id, threat_log.is_end, threat_log.start_process_info).all()
+    if int(query_type) == -1:
+        threat = sql_session().query(g_threat_table).with_entities(threat_log.host, threat_log.process_chain_hash,
+                                                                   threat_log.hit_rule, threat_log.timestamp, threat_log.type, threat_log.risk_score, threat_log.id, threat_log.is_end, threat_log.start_process_info, threat_log.handle_type).all()
+    else:
+        threat = sql_session().query(g_threat_table).with_entities(threat_log.host, threat_log.process_chain_hash,
+                                                                   threat_log.hit_rule, threat_log.timestamp, threat_log.type, threat_log.risk_score, threat_log.id, threat_log.is_end, threat_log.start_process_info, threat_log.handle_type).filter_by(handle_type=query_type).all()
     sql_session().close()
     return threat
 

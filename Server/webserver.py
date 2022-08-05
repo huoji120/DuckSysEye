@@ -25,19 +25,50 @@ def root():
 
 @app.route('/static/<path:path>')
 def on_vue_static(path):
-    print(path)
+    if request.remote_addr not in config.ALLOW_ACCESS_IP:
+        return "Access Denied"
     return app.send_static_file("./" + path)
+
+
+@app.route('/api/v1/get/threat_statistics', methods=['GET'])
+def threat_statistics():
+    if request.remote_addr not in config.ALLOW_ACCESS_IP:
+        return "Access Denied"
+    # sqlite的count啥的还不如自己查出来自己统计
+    threat_datas = sql.query_all_threat_log(-1)
+    return_data = {
+        'all': len(threat_datas),
+        'confirm': 0,
+        'ingore': 0,
+        'working': 0
+    }
+    for iter in threat_datas:
+        if iter[9] == 1:
+            return_data['confirm'] += 1
+        elif iter[9] == 2:
+            return_data['ingore'] += 1
+        if iter[7] == 0:
+            return_data['working'] += 1
+    return {'data': return_data}
+
+
+@app.route('/api/v1/get/process_chain/handle', methods=['GET'])
+def handle_chain_data():
+    id = request.args.get('id')
+    handletype = request.args.get('handletype')
+    if request.remote_addr not in config.ALLOW_ACCESS_IP or (id is None or handletype is None):
+        return "Access Denied"
+    sql.handle_threat_log(id, handletype)
+    return {'data': {'success': 1}}
 
 
 @app.route('/api/v1/get/process_chain/delete', methods=['GET'])
 def delete_chain_data():
-    if request.remote_addr not in config.ALLOW_ACCESS_IP:
-        return "Access Denied"
     id = request.args.get('id')
-    return_data = {'success': 1}
-    if id is not None:
-        sql.delete_threat(id)
-    return {'data': return_data}
+    if request.remote_addr not in config.ALLOW_ACCESS_IP or id is None:
+        return "Access Denied"
+    sql.delete_threat(id)
+    return {'data': {'success': 1}}
 
 
 @app.route('/api/v1/get/process_chain/pull', methods=['GET'])
@@ -62,9 +93,11 @@ def pull_chain_data():
 
 @app.route('/api/v1/get/process_chain/all')
 def process_chain():
-    if request.remote_addr not in config.ALLOW_ACCESS_IP:
+    # -1全部 0未处理的 1处理的 2忽略的
+    query_type = request.args.get('query_type')
+    if request.remote_addr not in config.ALLOW_ACCESS_IP or query_type is None:
         return "Access Denied"
-    threat_datas = sql.query_all_threat_log()
+    threat_datas = sql.query_all_threat_log(query_type)
     return_data = []
     for iter in threat_datas:
         return_data.append({

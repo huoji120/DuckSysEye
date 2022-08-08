@@ -30,16 +30,19 @@ apt样本:
 ![image](https://github.com/huoji120/DuckSysEye/raw/main/Image/3.png)
 勒索软件:
 ![image](https://github.com/huoji120/DuckSysEye/raw/main/Image/4.png)
+网站入侵提权到执行cobalt strike:
+![image](https://github.com/huoji120/DuckSysEye/raw/main/Image/5.png)
+
 ### 待做列表
-1. 更好的前端(目前是VUE-CDN模式,不太好,想换成VUE-CLI)
-2. 日志回放
-3. 威胁狩猎
+1. 更好的前端(目前是VUE-CDN模式,不太好,想换成VUE-CLI) 已经完成
+2. 日志回放【目前重点】
+3. 威胁狩猎【目前重点】
 4. att&ck热力图
 5. 在线规则编辑器
 6. 内网横向检测
-7. iis、apache、nginx日志搜集分析(aka: XDR)
+7. iis、apache、nginx日志搜集分析(aka: XDR的实现)
 8. 集成反病毒引擎
-
+9. 完善目前的插件系统【目前重点】
 ### 安装
 下载release,里面有客户端和服务端  
 服务端是python3编写,安装完依赖库后输入
@@ -129,7 +132,7 @@ https://github.com/zeroSteiner/rule-engine
 3. yara
 https://github.com/VirusTotal/yara
 4. sysmon-config(客户端使用的默认的规则,但是我做了一些修改)
-https://github.com/SwiftOnSecurity/sysmon-config
+https://github.com/SwiftOnSecurity/sysmon-config  
 请遵守相关库的开源协议.相关法律风险本项目不负任何责任
 
 ### 社区

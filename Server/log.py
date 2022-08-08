@@ -59,8 +59,11 @@ def process_log(host, json_log, raw_log):
             if score > 0:
                 child.set_score(score, rule_hit_name)
                 had_threat = global_vars.THREAT_TYPE_PROCESS
-        plugin.dispath_rule_new_process_create(
+
+        had_threat_plugin = plugin.dispath_rule_new_process_create(
             host, current_process, raw_log, json_log)
+        if had_threat == global_vars.THREAT_TYPE_NONE:
+            had_threat = had_threat_plugin
     elif json_log['action'] == 'processterminal':
         pid = log['processid']
         current_process = process.get_process_by_pid(pid)
@@ -84,8 +87,10 @@ def process_log(host, json_log, raw_log):
             if score > 0:
                 current_process.set_score(score, rule_hit_name)
                 had_threat = global_vars.THREAT_TYPE_PROCESS
-            plugin.dispath_rule_new_process_action(
+            had_threat_plugin = plugin.dispath_rule_new_process_action(
                 host, current_process, raw_log, json_log)
+            if had_threat == global_vars.THREAT_TYPE_NONE:
+                had_threat = had_threat_plugin
 
     if current_process is not None:
         if current_process.chain.risk_score >= config.MAX_THREAT_SCORE:

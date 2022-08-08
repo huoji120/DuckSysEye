@@ -57,19 +57,31 @@ def dispath_process_terminal(host, current_process, raw_log_data, json_log_data)
 
 
 def dispath_rule_new_process_create(host, current_process, raw_log_data, json_log_data):
+    threat_type = global_vars.THREAT_TYPE_NONE
     for index in range(len(global_vars.g_plugs)):
         _, plug_obj = global_vars.g_plugs[index]
         if hasattr(plug_obj, "rule_new_process_create"):
-            plug_obj.rule_new_process_create(
-                current_process, host, raw_log_data, json_log_data)
+            if threat_type == global_vars.THREAT_TYPE_NONE:
+                threat_type = plug_obj.rule_new_process_create(
+                    current_process, host, raw_log_data, json_log_data)
+            else:
+                plug_obj.rule_new_process_create(
+                    current_process, host, raw_log_data, json_log_data)
+    return threat_type
 
 
 def dispath_rule_new_process_action(host, current_process, raw_log_data, json_log_data):
+    threat_type = global_vars.THREAT_TYPE_NONE
     for index in range(len(global_vars.g_plugs)):
         _, plug_obj = global_vars.g_plugs[index]
         if hasattr(plug_obj, "rule_new_process_action"):
-            plug_obj.rule_new_process_action(
-                current_process, host, raw_log_data, json_log_data)
+            if threat_type == global_vars.THREAT_TYPE_NONE:
+                threat_type = plug_obj.rule_new_process_action(
+                    current_process, host, raw_log_data, json_log_data)
+            else:
+                plug_obj.rule_new_process_action(
+                    current_process, host, raw_log_data, json_log_data)
+    return threat_type
 
 
 def dispath_rule_init():

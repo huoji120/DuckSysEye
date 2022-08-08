@@ -141,3 +141,8 @@ https://github.com/SwiftOnSecurity/sysmon-config
 https://key08.com
 使用反馈、bug反馈等请前往社区
 在社区里面拥有工具的改装教程、设计代码、规则交流等.欢迎尝试访问
+
+### 特别感谢
+@Pwn0x01 yara插件  
+@zeroSteiner 规则引擎插件  
+@SwiftOnSecurity 客户端规则

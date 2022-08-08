@@ -4,7 +4,7 @@ import glob
 from pathlib import Path
 
 rm_plugs_config = {
-    "enable": True,
+    "enable": False,
     "author": "huoji",
     "description": "hello world插件示例",
     "version": "0.0.1",

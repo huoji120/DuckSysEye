@@ -27,10 +27,12 @@ def process_terminal(current_process, host, raw_log_data, json_log_data):
 
 def rule_new_process_create(current_process, host, raw_log_data, json_log_data):
     print('[helloworld plugin] rule new process create')
+    return global_vars.THREAT_TYPE_NONE
 
 
 def rule_new_process_action(current_process, host, raw_log_data, json_log_data):
     print('[helloworld plugin] rule new process action')
+    return global_vars.THREAT_TYPE_NONE
 
 
 def rule_init():

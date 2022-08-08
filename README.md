@@ -18,6 +18,7 @@ SysEye是一个window上的基于att&ck现代EDR设计思想的威胁响应工�
 4. SysEye没有实时拦截功能
 5. 对RPC、COM、ALPC基本无能为力
 6. 不支持更高级的扩展检测,如检测脚本、下发规则,主机链
+7. 受限于Sysmon,很多att&ck的T没有覆盖,也无法覆盖.
 请牢记,SysEye自身定位是轻量级威胁检出工具
 
 ### 检出截图
@@ -39,12 +40,99 @@ apt样本:
 7. iis、apache、nginx日志搜集分析(aka: XDR)
 8. 集成反病毒引擎
 
+### 安装
+下载release,里面有客户端和服务端  
+服务端是python3编写,安装完依赖库后输入
+```
+python webserver.py
+```
+即可部署  
+服务端部署后,修改config.py里面的  
+```
+# 检出阈值,越高越难检出但是也会越准确  
+MAX_THREAT_SCORE = 170
+
+# 授权访问主站的IP列表.如果不在后台里面则不能访问后台  
+ALLOW_ACCESS_IP = ['127.0.0.1']
+```
+MAX_THREAT_SCORE代表报警分数,意思为进程链总分超过此分数则报警,越高越准但是也会漏报
+ALLOW_ACCESS_IP代表允许的IP,只有在此名单里面的IP才能访问后台.请增加自己的IP地址  
+
+客户端则编辑config.ini  
+```
+[communication]
+server = http://192.168.111.189:5000
+```
+其中server改成你的服务端的地址  
+然后分发三个文件给客户端并且放在同一目录:  
+config.ini、install.cmd、SysEye.exe、sysmon.xml、Sysmon64.exe  
+之后管理员身份运行install.cmd安装sysmon与syseye  
+访问 http://服务器ip:5000(flask默认端口) 查看后台  
+当然一开始啥数据也没有,为了确认是否安装成功可以将webserver.py中的  
+```
+    flask_log = logging.getLogger('werkzeug')
+    flask_log.setLevel(logging.ERROR)
+```
+注释掉,检查有没有客户端的请求即可   
+手动安装(cmd脚本其实执行了这些命令):
+```
+//安装sysmon:
+sysmon -i 
+//sysmon加载配置项
+sysmon -c sysmon.xml
+//安装syseye
+syseye /install
+```
+
+### 卸载
+卸载syseye:
+在syseye目录下执行
+```
+SysEye /uninstall
+```
+如果您需要卸载sysmon
+执行
+```
+sysmon /uninstall
+```
+即可干净卫生的卸载掉Syseye
+
 ### 规则相关的问题
 1. 规则目前仅120条,很多攻击面没有覆盖,其他规则请访问《社区》
-2. 规则目前只支持rule_engine的规则,yara规则在制作的路上...
+2. 规则目前只支持rule_engine与yara的规则,其中yara的规则支持是以插件的形式支持
+3. 目前的规则字段完全依赖sysmon的字段,sysmon的字段请检查根目录下的provider.json(但是请记住纯小写,自行做大小写转换)
+
+规则目前有两种规则:
+rule_engine:
+如检测由CMD启动的ipconfig:
+```
+{
+    'rules': [
+        'originalfilename =~ ".*cmd.exe" and commandline =~ ".*ipconfig.*"',
+    ],
+    'score': 80,
+    'name': 'cmd启动ipconfig'
+},
+```
+分数代表的是本次规则给进程链所增加的分数,报警是根据前面的MAX_THREAT_SCORE设置的
+
+具体编写方法请移步:
+https://github.com/zeroSteiner/rule-engine
+
+yara,需要安装插件
+
+### 第三方引用库
+1. sysmon
+https://docs.microsoft.com/zh-cn/sysinternals/downloads/sysmon
+2. rule_engine
+https://github.com/zeroSteiner/rule-engine
+3. yara
+https://github.com/VirusTotal/yara
+4. sysmon-config(客户端使用的默认的规则,但是我做了一些修改)
+https://github.com/SwiftOnSecurity/sysmon-config
+请遵守相关库的开源协议.相关法律风险本项目不负任何责任
 
 ### 社区
-
 开源的目的不是为了免费填鸭式教学,或者被免费拿去发公众号引流、去拿去集成产品方案去赚钱,而是要一起完善这个工具,从而实现共赢.
 因此成立了一个社区:
 https://key08.com

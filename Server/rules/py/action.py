@@ -17,7 +17,7 @@ rule = [
         'rules': [
             'action == "processaccess" and calltrace =~ ".*unknown.*" and not calltrace =~ ".*java\.dll.*" and not calltrace =~ ".*appvisvsubsystems64\.dll.*" and not calltrace =~ ".*twinui\.dll.*" and not calltrace =~ ".*nativeimages.*"',
         ],
-        'score': 100,
+        'score': 60,
         'name': '异常进程访问'
     },
     {
@@ -35,7 +35,7 @@ rule = [
             'action == "processaccess" and calltrace =~ ".*kernelbase\.dll\+de67e.*"',
             'action == "processaccess" and calltrace =~ ".*framedynos\.dll.*"',
         ],
-        'score': 100,
+        'score': 40,
         'name': '不正常的进程访问'
     },
     {

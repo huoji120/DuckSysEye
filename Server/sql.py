@@ -121,7 +121,7 @@ def update_threat_log(host, risk_score, hit_rule_json, process_chain_hash, raw_j
     global g_engine
     conn = g_engine.connect()
     update = g_threat_table.update().values(risk_score=risk_score,
-                                            hit_rule=hit_rule_json, data=raw_json, is_end=int(is_end), handle_type=0).where(g_threat_table.columns.host == host, g_threat_table.columns.process_chain_hash == process_chain_hash, g_threat_table.columns.type == type)
+                                            hit_rule=hit_rule_json, data=raw_json, is_end=int(is_end)).where(g_threat_table.columns.host == host, g_threat_table.columns.process_chain_hash == process_chain_hash, g_threat_table.columns.type == type)
     result = conn.execute(update)
     return result
 

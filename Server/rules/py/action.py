@@ -15,10 +15,28 @@ rule = [
     },
     {
         'rules': [
-            'action == "processaccess"',
+            'action == "processaccess" and calltrace =~ ".*unknown.*" and not calltrace =~ ".*java\.dll.*" and not calltrace =~ ".*appvisvsubsystems64\.dll.*" and not calltrace =~ ".*twinui\.dll.*" and not calltrace =~ ".*nativeimages.*"',
         ],
-        'score': 30,
-        'name': '可疑进程访问'
+        'score': 100,
+        'name': '异常进程访问'
+    },
+    {
+        'rules': [
+            'action == "processaccess" and sourceimage =~ ".*office16.*" and calltrace =~ ".*kernelbase\.dll.*"',
+        ],
+        'score': 100,
+        'name': 'office异常进程内存'
+    },
+    {
+        'rules': [
+            'action == "processaccess" and calltrace =~ ".*wshom\.ocx.*"',
+            'action == "processaccess" and calltrace =~ ".*shell32\.dll.*"',
+            'action == "processaccess" and calltrace =~ ".*dbgcore\.dll.*"',
+            'action == "processaccess" and calltrace =~ ".*kernelbase\.dll\+de67e.*"',
+            'action == "processaccess" and calltrace =~ ".*framedynos\.dll.*"',
+        ],
+        'score': 100,
+        'name': '不正常的进程访问'
     },
     {
         'rules': [

@@ -1,4 +1,3 @@
-from ast import Import
 import json
 from flask import Flask
 from flask import request
@@ -6,9 +5,8 @@ import sql
 import log
 import rule
 import config
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 import plugin
-import logging
 
 app = Flask(__name__,
             template_folder="./templates",
@@ -147,6 +145,7 @@ if __name__ == '__main__':
     sql.init()
     rule.init_rule()
 
-    flask_log = logging.getLogger('werkzeug')
-    flask_log.setLevel(logging.ERROR)
+    # 如果你觉得日志太多了,去掉这个注释...
+    #flask_log = logging.getLogger('werkzeug')
+    # flask_log.setLevel(logging.ERROR)
     app.run(debug=True, host="0.0.0.0")

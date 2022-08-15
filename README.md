@@ -21,6 +21,10 @@ SysEye是一个window上的基于att&ck现代EDR设计思想的威胁响应工�
 7. 受限于Sysmon,很多att&ck的T没有覆盖,也无法覆盖.
 请牢记,SysEye自身定位是轻量级威胁检出工具
 
+### SysEye 之所以不是杀毒软件
+跟EDR一样,解决的是文件检出无法处理的问题,一般来说EDR会内置杀毒引擎,鸭鸭之眼没有,所以鸭鸭之眼只解决杀毒软件无法查杀的木马或者高级威胁.简而言之,他是处理高级威胁的,不是处理
+一般的木马的,具体可以移步[《威胁建模（一）: 为什么我们需要att&ck矩阵》](https://key08.com/index.php/2022/08/09/1505.html)这篇文章中了解详情
+
 ### 检出截图
 威胁列表:
 ![image](https://github.com/huoji120/DuckSysEye/raw/main/Image/1.png)

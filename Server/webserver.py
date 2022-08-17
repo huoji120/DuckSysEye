@@ -7,7 +7,7 @@ import rule
 import config
 from flask import Flask, render_template, request
 import plugin
-
+import logging
 app = Flask(__name__,
             template_folder="./templates",
             static_folder="./templates",
@@ -146,6 +146,6 @@ if __name__ == '__main__':
     rule.init_rule()
 
     # 如果你觉得日志太多了,去掉这个注释...
-    #flask_log = logging.getLogger('werkzeug')
-    # flask_log.setLevel(logging.ERROR)
+    flask_log = logging.getLogger('werkzeug')
+    flask_log.setLevel(logging.ERROR)
     app.run(debug=True, host="0.0.0.0")

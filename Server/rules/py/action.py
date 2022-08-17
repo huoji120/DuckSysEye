@@ -15,9 +15,9 @@ rule = [
     },
     {
         'rules': [
-            'action == "processaccess" and calltrace =~ ".*unknown.*" and not calltrace =~ ".*java\.dll.*" and not calltrace =~ ".*appvisvsubsystems64\.dll.*" and not calltrace =~ ".*twinui\.dll.*" and not calltrace =~ ".*nativeimages.*"',
+            'action == "processaccess" and calltrace =~ ".*unknown.*" and not calltrace =~ ".*conpty\.node.*" and not calltrace =~ ".*java\.dll.*" and not calltrace =~ ".*appvisvsubsystems64\.dll.*" and not calltrace =~ ".*twinui\.dll.*" and not calltrace =~ ".*nativeimages.*" and not targetimage == "c:\\windows\\system32\\cmd.exe"',
         ],
-        'score': 60,
+        'score': 40,
         'name': '异常进程访问'
     },
     {

@@ -1,5 +1,4 @@
 import json
-from pickle import TRUE
 import time
 
 import process
@@ -112,10 +111,28 @@ def process_log(host, json_log, raw_log):
                 else:
                     sql.update_threat_log(host, current_process.chain.risk_score,
                                           json.dumps(current_process.chain.operationlist), current_process.chain.hash, current_process.chain.get_json(), global_vars.THREAT_TYPE_PROCESS, current_process.chain.active == False)
+    parent_pid = 0
+    target_pid = 0
+    self_hash = ''
+    target_image_path = ''
+    target_hash = ''
+    raw_json_log = json.loads(raw_log)
+
     if current_process is not None:
         chain_hash = current_process.chain.hash
-    sql.push_raw(host, json.loads(raw_log), rule_hit_name,
-                 score, chain_hash, had_threat)
+        parent_pid = current_process.ppid
+        if 'TargetProcessId' in raw_json_log:
+            target_process: process.Process = current_process.chain.find_process_by_pid(
+                raw_json_log['TargetProcessId'])
+            target_pid = target_process.pid
+            target_image_path = target_process.path
+            target_hash = target_process.md5
+        self_hash = current_process.md5
+
+    sql.push_process_raw(host, raw_json_log, rule_hit_name,
+                         score, chain_hash, had_threat, parent_pid,
+                         target_pid, self_hash, target_image_path, target_hash)
+
     '''
     for iter in process.g_ProcessChainList:
         item: process.Process = iter

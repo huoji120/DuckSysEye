@@ -128,10 +128,32 @@ rule = [
     },
     {
         'rules': [
-            'action == "filecreate" and targetfilename =~ "c:\\\\windows\\\\.*"',
+            'action == "filecreate" and targetfilename =~ "c:\\\\\\\\windows\\\\\\\\.*"',
+            'action == "filecreate" and targetfilename =~ ".*\.exe"',
+            'action == "filecreate" and targetfilename =~ ".*\.cmd"',
+            'action == "filecreate" and targetfilename =~ ".*\.bat"',
+            'action == "filecreate" and targetfilename =~ ".*\.dll"',
+        ],
+        'score': 80,
+        'name': '在windows目录创建可执行文件'
+    },
+    {
+        'rules': [
+            'action == "filecreate" and targetfilename =~ "c:\\\\\\\\windows\\\\\\\\.*"',
         ],
         'score': 50,
         'name': '在C盘目录创建文件'
+    },
+    {
+        'rules': [
+            'action == "filecreate" and targetfilename =~ "c:\\\\\\\\users\\\\\\\\.*"',
+            'action == "filecreate" and targetfilename =~ ".*\.exe"',
+            'action == "filecreate" and targetfilename =~ ".*\.cmd"',
+            'action == "filecreate" and targetfilename =~ ".*\.bat"',
+            'action == "filecreate" and targetfilename =~ ".*\.dll"',
+        ],
+        'score': 30,
+        'name': '在appdata目录创建可执行文件'
     },
     {
         'rules': [

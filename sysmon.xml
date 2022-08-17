@@ -239,6 +239,15 @@
 		<FileCreateTime onmatch="include">
 			<Image name="T1099" condition="begin with">C:\Users</Image> <!--Look for timestomping in user area, usually nothing should be doing that here-->
 			<TargetFilename name="T1099" condition="end with">.exe</TargetFilename> <!--Look for backdated executables anywhere-->
+			<TargetFilename name="T1099" condition="end with">.cmd</TargetFilename>
+			<TargetFilename name="T1099" condition="end with">.bat</TargetFilename>
+			<TargetFilename name="T1099" condition="end with">.com</TargetFilename>
+			<TargetFilename name="T1099" condition="end with">.vbs</TargetFilename>
+			<TargetFilename name="T1099" condition="end with">.js</TargetFilename>
+			<TargetFilename name="T1099" condition="end with">.vb</TargetFilename>
+			<TargetFilename name="T1099" condition="end with">.mof</TargetFilename>
+			<TargetFilename name="T1099" condition="end with">.sys</TargetFilename>
+			<TargetFilename name="T1099" condition="end with">.dll</TargetFilename>
 			<Image name="T1099" condition="begin with">\Device\HarddiskVolumeShadowCopy</Image> <!--Nothing should be written here | Credit: @SBousseaden [ https://twitter.com/SBousseaden/status/1133030955407630336 ] -->
 		</FileCreateTime>
 	</RuleGroup>

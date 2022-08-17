@@ -115,7 +115,7 @@ def push_process_raw(host, log, rule_hit_name, score, chain_hash, type, parent_p
     ins = g_rawdata_table_ins.values(host=host,
                                      action=log['Action'],
                                      path=log['Data']['Path'] if 'Path' in log['Data'] else (
-                                         log['Data']['SourceImage'] if 'SourceImage' in log['Data'] else log['Data']['Image']),  # 只有三种情况,没有path就找sourceimage,没有sourceimage就找image
+                                         log['Data']['SourceImage'] if 'SourceImage' in log['Data'] else (log['Data']['Image'] if 'Image' in log['Data'] else '')),  # 只有三种情况,没有path就找sourceimage,没有sourceimage就找image
                                      pid=log['Data']['ProcessId'],
                                      ppid=parent_pid,
                                      target_path=log['Data']['TargetImage'] if 'TargetImage' in log['Data'] else target_image_path,

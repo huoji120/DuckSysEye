@@ -105,6 +105,7 @@ class Process:
         self.md5 = md5
         self.user = user
         self.chain: ProcessChain = None
+        self.host = host
 
     def set_chain_data(self, chain):
         self.chain = chain
@@ -148,6 +149,7 @@ class ProcessChain:
         self.rpc = False
         self.rpc_process_chain = ""
         self.time = root_process.time
+        self.host = root_process.host
         self.add_root_process(root_process)
 
     def get_operationlist(self):
